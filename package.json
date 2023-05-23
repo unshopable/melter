@@ -1,0 +1,27 @@
+{
+  "name": "@unshopable/melter",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "fast-glob": "^3.2.12",
+    "fs-extra": "^11.1.1",
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2",
+    "tapable": "^2.2.1",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/fs-extra": "^11.0.1",
+    "@types/lodash.get": "^4.4.7",
+    "@types/lodash.set": "^4.3.7",
+    "@types/node": "^20.2.3"
+  }
+}
