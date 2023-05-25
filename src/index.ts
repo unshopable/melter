@@ -10,4 +10,5 @@ export function melter(config: MelterConfig) {
 }
 
 export type * from './compiler';
+export { MelterPlugin } from './compiler/plugin';
 export type * from './types';
