@@ -168,3 +168,5 @@ export default class Compiler {
     await fs.remove(targetPathWithFilename);
   }
 }
+
+export * from './types';

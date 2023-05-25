@@ -1,10 +1,11 @@
-import { defineConfig } from 'tsup';
+import type { Options } from 'tsup';
 
-export default defineConfig({
-  target: 'node16',
-  entry: ['src/**/*.ts'],
-  format: ['esm', 'cjs'],
-  bundle: false,
-  treeshake: true,
+const tsupConfig: Options = {
+  entryPoints: ['src/*.ts'],
+  clean: true,
+  format: ['cjs', 'esm'],
   dts: true,
-});
+  onSuccess: 'npm run build:fix',
+};
+
+export default tsupConfig;
