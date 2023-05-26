@@ -131,7 +131,16 @@ export class PathsPlugin extends Plugin {
 
         if (!assetType) return;
 
-        const assetFilename = asset.source.relative.split('/').at(-1)!;
+        const assetSourcePathParts = asset.source.relative.split('/');
+
+        let assetFilename: string = '';
+
+        if (assetSourcePathParts.at(-2) === 'customers') {
+          assetFilename = assetSourcePathParts.slice(-2).join('/');
+        } else {
+          assetFilename = assetSourcePathParts.at(-1)!;
+        }
+
         const assetTargetPath = this.resolveAssetTargetPath(
           compiler.cwd,
           output,
