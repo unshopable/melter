@@ -2,6 +2,7 @@ import { ZodInvalidTypeIssue, ZodIssue, ZodIssueCode, ZodTooSmallIssue } from 'z
 
 export function formatZodIssue(issue: ZodIssue): string {
   switch (issue.code) {
+    case ZodIssueCode.custom:
     case ZodIssueCode.invalid_type: {
       const { path, message, expected, received } = issue as ZodInvalidTypeIssue;
       const pathString = path.join('.');

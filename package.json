@@ -1,17 +1,11 @@
 {
   "name": "@unshopable/melter",
-  "version": "0.1.0-alpha.20",
+  "version": "0.1.0-alpha.27",
   "description": "",
-  "private": false,
-  "scripts": {
-    "build": "tsup",
-    "build:fix": "esno scripts/postbuild.ts",
-    "prepublishOnly": "npm run build"
-  },
-  "keywords": [],
   "author": "",
+  "keywords": [],
   "license": "ISC",
-  "type": "module",
+  "private": false,
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,8 +19,13 @@
   "files": [
     "dist"
   ],
+  "scripts": {
+    "dev": "npx nodemon",
+    "build": "tsup",
+    "build:fix": "esno scripts/postbuild.ts",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": {
-    "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.1",
@@ -36,12 +35,14 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.2",
     "@types/fs-extra": "^11.0.1",
     "@types/lodash.get": "^4.4.7",
     "@types/lodash.set": "^4.3.7",
     "@types/node": "^20.2.3",
     "esno": "^0.16.3",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4"
   }

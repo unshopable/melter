@@ -1,117 +1,50 @@
-import fg from 'fast-glob';
-import fs from 'fs-extra';
-import get from 'lodash.get';
-import set from 'lodash.set';
-import path from 'path';
-import logger from '../logger';
-import { getFilenameFromPath, parseJSON } from '../utils/utils';
-import { formatZodIssues } from '../utils/zod';
-import { Config, Paths, config } from './types';
+import { z } from 'zod';
+import { plugin } from '../Plugin';
+import { pathsPluginConfig } from '../plugins/PathsPlugin';
+import { statsPluginConfig } from '../plugins/StatsPlugin';
 
-const defaultsPaths: Paths = {
-  assets: ['assets/[^/]+\\.*'],
-  config: ['config/[^/]+\\.json'],
-  layout: ['layout/[^/]+\\.liquid'],
-  locales: ['locales/[^/]+\\.json'],
-  sections: ['sections/[^/]+\\.liquid'],
-  snippets: ['snippets/[^/]+\\.liquid'],
-  templates: ['templates/[^/]+\\.liquid', 'sections/[^/]+\\.json'],
-};
+export const baseCompilerConfig = z.object({
+  /**
+   * Where to look for files to compile.
+   */
+  input: z.string(),
 
-export const defaultConfig: Config = {
+  /**
+   * Where to write the compiled files to. The emitter won't emit any assets if undefined.
+   */
+  output: z.string(),
+
+  /**
+   * A list of additional plugins to add to the compiler.
+   */
+  plugins: z.array(plugin),
+});
+
+export type BaseCompilerConfig = z.infer<typeof baseCompilerConfig>;
+
+export const defaultBaseCompilerConfig: BaseCompilerConfig = {
   input: 'src',
   output: 'dist',
-
-  clean: true,
-
-  watch: false,
-
-  paths: defaultsPaths,
-
   plugins: [],
 };
 
-async function getConfigFiles(cwd: string): Promise<string[]> {
-  const configFilePattern = 'melter.config.*';
+export const builtinPluginsConfig = z
+  .object({})
+  .merge(statsPluginConfig.deepPartial())
+  .merge(pathsPluginConfig.deepPartial());
 
-  return await fg(path.join(cwd, configFilePattern));
-}
+export const compilerConfig = baseCompilerConfig.merge(builtinPluginsConfig);
 
-async function parseConfigFile(file: string): Promise<{ config: Config | null; errors: string[] }> {
-  let userConfig: Config | null = null;
+/**
+ * Compiler configuration object.
+ */
+export type CompilerConfig = z.infer<typeof compilerConfig>;
 
-  if (file.endsWith('json')) {
-    const content = await fs.readFile(file, 'utf8');
+export const melterConfig = compilerConfig.deepPartial();
 
-    const { data, error } = parseJSON<Config>(content);
-
-    if (error) {
-      return {
-        config: null,
-        errors: [error],
-      };
-    }
-
-    userConfig = data;
-  } else {
-    userConfig = require(file).default;
-  }
-
-  // We don't expect the config to define every single option.
-  const result = await config.deepPartial().safeParseAsync(userConfig);
-
-  if (result.success) {
-    return {
-      config: userConfig,
-      errors: [],
-    };
-  }
-
-  return {
-    config: null,
-    errors: formatZodIssues(result.error.issues),
-  };
-}
-
-export function patchConfig(userConfig: Config): Config {
-  const result = config.safeParse(userConfig);
-
-  if (result.success) return result.data;
-
-  const patchedUserConfig = { ...userConfig };
-
-  result.error.issues.forEach((issue) => {
-    const path = issue.path.join('.');
-    const defaultValue = get(defaultConfig, path);
-
-    set(patchedUserConfig, path, defaultValue);
-  });
-
-  return patchedUserConfig as Config;
-}
-
-export default async function loadConfig(): Promise<Config> {
-  const configFiles = await getConfigFiles(process.cwd());
-
-  if (configFiles.length === 0) {
-    logger.warning('No config found. Loading default config...');
-
-    return defaultConfig;
-  }
-
-  const firstConfigFile = configFiles[0];
-
-  if (configFiles.length > 1) {
-    logger.warning(`Multiple configs found. Loading ${getFilenameFromPath(firstConfigFile)}...`);
-  }
-
-  const { config: userConfig, errors } = await parseConfigFile(firstConfigFile);
-
-  if (!userConfig) {
-    logger.error(errors);
-
-    process.exit();
-  }
-
-  return patchConfig(userConfig);
-}
+/**
+ * Melter configuration object.
+ *
+ * @see [Configuration documentation](https://github.com/unshopable/melter#configuration)
+ */
+export type MelterConfig = z.infer<typeof melterConfig>;
