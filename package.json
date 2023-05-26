@@ -1,18 +1,18 @@
 {
   "name": "@unshopable/melter",
-  "version": "0.1.0-alpha.27",
+  "version": "0.1.0-alpha.28",
   "description": "",
   "author": "",
   "keywords": [],
   "license": "ISC",
   "private": false,
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -22,7 +22,6 @@
   "scripts": {
     "dev": "npx nodemon",
     "build": "tsup",
-    "build:fix": "esno scripts/postbuild.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -39,7 +38,6 @@
     "@types/lodash.get": "^4.4.7",
     "@types/lodash.set": "^4.3.7",
     "@types/node": "^20.2.3",
-    "esno": "^0.16.3",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
