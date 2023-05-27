@@ -37,11 +37,11 @@ Now we'll create the following directory structure, files and their contents:
 
 ```diff
   melter-basic-demo
-+ └── src
-+     └── sections
-+         └── my-section.liquid
-  package-lock.json
-  package.json
++ ├── src
++ │   └── sections
++ │       └── my-section.liquid
+  ├── package-lock.json
+  └── package.json
 ```
 
 **src/my-section.liquid**
@@ -69,9 +69,11 @@ melter
 This should have created a new directory (`dist`) in the root of your project with the following directory strcuture, files and their contents:
 
 ```
-dist
-└── sections
-    └── my-section.liquid
+melter-basic-demo
+├── dist
+│   └── sections
+│       └── my-section.liquid
+...
 ```
 
 **dist/my-section.liquid**
@@ -87,12 +89,13 @@ Sure, that's not really exciting but we'll get there. Continue reading this docu
 Since melter doesn't really do anything – or at least nothing useful – without configuration, let's create a config:
 
 ```diff
-  src
-  └── sections
-      └── my-section.liquid
-+ melter.config.js
-  package-lock.json
-  package.json
+  melter-basic-demo
+  ├── src
+  │   └── sections
+  │       └── my-section.liquid
++ ├── melter.config.js
+  ├── package-lock.json
+  └── package.json
 ```
 
 **melter.config.js**
@@ -147,14 +150,15 @@ Now that you know what can be configured, let's play with it:
 Also update your `src` directory:
 
 ```diff
-  src
-  └── sections
-+     ├── legacy
-+     │   └── my-legacy-section.liquid
-      └── my-section.liquid
-  melter.config.js
-  package-lock.json
-  package.json
+  melter-basic-demo
+  ├── src
+  │   └── sections
++ │       ├── legacy
++ │       │   └── my-legacy-section.liquid
+  │       └── my-section.liquid
+  ├── melter.config.js
+  ├── package-lock.json
+  └── package.json
 ```
 
 And once again, run
@@ -166,10 +170,12 @@ melter
 Your `dist` directory should look like this now:
 
 ```
-dist
-└── sections
-    ├── my-legacy-section.liquid
-    └── my-section.liquid
+melter-basic-demo
+├── dist
+│   └── sections
+│       ├── my-legacy-section.liquid
+│       └── my-section.liquid
+...
 ```
 
 > **Warning**
@@ -202,15 +208,16 @@ Plugins are what makes melter powerful. A plugin is a JavaScript object that has
 To see them in action, create a new file in your root directory:
 
 ```diff
-  src
-  └── sections
-      ├── legacy
-      │   └── my-legacy-section.liquid
-      └── my-section.liquid
-  melter.config.js
-+ my-first-plugin.js
-  package-lock.json
-  package.json
+  melter-basic-demo
+  ├── src
+  │   └── sections
+  │       ├── legacy
+  │       │   └── my-legacy-section.liquid
+  │       └── my-section.liquid
+  ├── melter.config.js
++ ├── my-first-plugin.js
+  ├── package-lock.json
+  └── package.json
 ```
 
 ```js
