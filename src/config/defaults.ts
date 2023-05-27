@@ -1,5 +1,5 @@
-import get from 'lodash.get';
-import set from 'lodash.set';
+import get from 'just-safe-get';
+import set from 'just-safe-set';
 import { CompilerConfig, MelterConfig, baseCompilerConfig, defaultBaseCompilerConfig } from '.';
 import { PathsPlugin } from '../plugins/PathsPlugin';
 import { StatsPlugin } from '../plugins/StatsPlugin';

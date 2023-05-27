@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { z } from 'zod';
 import { Asset, AssetPath, AssetType } from '../Asset';
 import { Compiler } from '../Compiler';

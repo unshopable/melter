@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { SyncHook } from 'tapable';
 import { Asset } from './Asset';
 import { Compiler, CompilerEvent } from './Compiler';

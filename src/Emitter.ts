@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 import { SyncHook } from 'tapable';
 import { Asset, AssetPath } from './Asset';
 import { Compilation } from './Compilation';

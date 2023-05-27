@@ -1,5 +1,5 @@
-import chokidar from 'chokidar';
-import fs from 'fs';
+import * as chokidar from 'chokidar';
+import * as fs from 'fs';
 import { Compiler } from './Compiler';
 
 interface WatchOptions extends chokidar.WatchOptions {}
