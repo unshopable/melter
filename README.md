@@ -215,7 +215,7 @@ To see them in action, create a new file in your root directory:
   │       │   └── my-legacy-section.liquid
   │       └── my-section.liquid
   ├── melter.config.js
-+ ├── my-first-plugin.js
++ ├── hello-to-hi-plugin.js
   ├── package-lock.json
   └── package.json
 ```
@@ -223,10 +223,10 @@ To see them in action, create a new file in your root directory:
 ```js
 import { Plugin } from '@unshopable/melter';
 
-export class MyFirstPlugin extends Plugin {
+export class HelloToHiPlugin extends Plugin {
   apply(compiler) {
-    compiler.hooks.emitter.tap('MyFirstPlugin', () => {
-      emitter.hooks.beforeAssetAction.tap('MyFirstPlugin', (asset) => {
+    compiler.hooks.emitter.tap('HelloToHiPlugin', () => {
+      emitter.hooks.beforeAssetAction.tap('HelloToHiPlugin', (asset) => {
         const assetContentString = asset.content.toString();
 
         if (assetContentString.includes('Hello')) {
@@ -243,7 +243,7 @@ export class MyFirstPlugin extends Plugin {
 Now add this to your melter config:
 
 ```diff
-  import { MyFirstPlugin } from './my-first-plugin.js';
+  import { HelloToHiPlugin } from './hello-to-hi-plugin.js';
 
   /** @type {import("@unshopable/melter").MelterConfig} */
   const melterConfig = {
@@ -259,7 +259,7 @@ Now add this to your melter config:
     },
 
 +   plugins: [
-+     new MyFirstPlugin(),
++     new HelloToHiPlugin(),
 +   ],
   };
 ```
