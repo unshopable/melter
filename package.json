@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "keywords": [],
-  "license": "ISC",
+  "license": "MIT",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
