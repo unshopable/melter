@@ -1,11 +1,12 @@
-import get from 'just-safe-get';
-import set from 'just-safe-set';
-import { CompilerConfig, MelterConfig, baseCompilerConfig, defaultBaseCompilerConfig } from '.';
+import { CompilerConfig, MelterConfig, defaultBaseCompilerConfig } from '.';
+import { Plugin } from '../Plugin';
 import { PathsPlugin } from '../plugins/PathsPlugin';
 import { StatsPlugin } from '../plugins/StatsPlugin';
 
-function applyDefaultPlugins(config: CompilerConfig) {
-  config.plugins.push(
+function applyDefaultPlugins(config: CompilerConfig): Plugin[] {
+  const plugins = [];
+
+  plugins.push(
     ...[
       new StatsPlugin({
         stats: config.stats,
@@ -17,31 +18,16 @@ function applyDefaultPlugins(config: CompilerConfig) {
     ],
   );
 
-  return config;
-}
-
-function patchMelterConfig(config: MelterConfig): CompilerConfig {
-  // Only validate base compiler config. Each plugin handles its own validation.
-  const result = baseCompilerConfig.safeParse(config);
-
-  if (result.success) return result.data;
-
-  const patchedCompilerConfig = { ...config };
-
-  result.error.issues.forEach((issue) => {
-    const path = issue.path.join('.');
-    const defaultValue = get(defaultBaseCompilerConfig, path);
-
-    set(patchedCompilerConfig, path, defaultValue);
-  });
-
-  return patchedCompilerConfig as CompilerConfig;
+  return plugins;
 }
 
 export function applyConfigDefaults(config: MelterConfig): CompilerConfig {
-  const compilerConfig = patchMelterConfig(config);
+  const compilerConfig = {
+    ...defaultBaseCompilerConfig,
+    ...config,
+  };
 
-  applyDefaultPlugins(compilerConfig);
+  compilerConfig.plugins = [...applyDefaultPlugins(compilerConfig), ...compilerConfig.plugins];
 
   return compilerConfig;
 }

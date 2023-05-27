@@ -1,88 +1,59 @@
 import * as path from 'path';
-import { z } from 'zod';
 import { Asset, AssetPath, AssetType } from '../Asset';
 import { Compiler } from '../Compiler';
 import { Emitter } from '../Emitter';
 import { Plugin } from '../Plugin';
-import { Entries } from '../types/util';
-import { formatZodIssues } from '../utils/zod';
 
-export const pathPattern = z.custom<RegExp>(
-  (value) => {
-    return value instanceof RegExp;
-  },
-  { message: "Property '%path' expected RegExp" },
-);
-
-/**
- * A map of Shopify's directory structure and component types.
- *
- * @see [Shopify Docs Reference](https://shopify.dev/docs/themes/architecture#directory-structure-and-component-types)
- */
-export const paths = z.object({
+type Paths = {
   /**
    * An array of paths pointing to files that should be processed as `assets`.
    */
-  assets: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
+  assets?: RegExp[];
 
   /**
    * An array of paths pointing to files that should be processed as `config`.
    */
-  config: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
+  config?: RegExp[];
 
   /**
    * An array of paths pointing to files that should be processed as `layout`.
    */
-  layout: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
+  layout?: RegExp[];
 
   /**
    * An array of paths pointing to files that should be processed as `locales`.
    */
-  locales: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
+  locales?: RegExp[];
 
   /**
    * An array of paths pointing to files that should be processed as `sections`.
    */
-  sections: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
+  sections?: RegExp[];
 
   /**
    * An array of paths pointing to files that should be processed as `snippets`.
    */
-  snippets: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
+  snippets?: RegExp[];
 
   /**
    * An array of paths pointing to files that should be processed as `templates`.
    */
-  templates: z
-    .array(pathPattern)
-    .nonempty({ message: "Property '%path' expected at least %minimum element(s)" }),
-});
+  templates?: RegExp[];
+};
 
-export type Paths = z.infer<typeof paths>;
+/**
+ * Path plugin configuration object.
+ */
+export type PathsPluginConfig = {
+  /**
+   * A map of Shopify's directory structure and component types.
+   *
+   * @see [Shopify Docs Reference](https://shopify.dev/docs/themes/architecture#directory-structure-and-component-types)
+   */
+  paths?: Paths | false;
+};
 
-export const pathsPluginConfig = z.object({
-  paths,
-});
-
-export type PathsPluginConfig = z.infer<typeof pathsPluginConfig>;
-
-export const deepPartialPluginConfig = pathsPluginConfig.deepPartial();
-
-export type DeepPartialPathsPluginConfig = z.infer<typeof deepPartialPluginConfig>;
-
-export const defaultPathsPluginConfig: PathsPluginConfig = {
+const defaultPathsPluginConfig: PathsPluginConfig = {
   paths: {
     assets: [/assets\/[^\/]*\.*$/],
     config: [/config\/[^\/]*\.json$/],
@@ -101,19 +72,19 @@ export const defaultPathsPluginConfig: PathsPluginConfig = {
 
 export class PathsPlugin extends Plugin {
   config: PathsPluginConfig;
-  shouldApply: boolean;
 
-  constructor(config: DeepPartialPathsPluginConfig = {}) {
+  constructor(config: PathsPluginConfig) {
     super();
 
-    this.config = {
-      paths: {
-        ...defaultPathsPluginConfig.paths,
-        ...config.paths,
-      },
-    };
-
-    this.shouldApply = Object.keys(this.config.paths).length > 0;
+    this.config =
+      config.paths !== false
+        ? {
+            paths: {
+              ...defaultPathsPluginConfig.paths,
+              ...config.paths,
+            },
+          }
+        : {};
   }
 
   apply(compiler: Compiler): void {
@@ -121,13 +92,13 @@ export class PathsPlugin extends Plugin {
 
     if (!output) return;
 
-    if (!this.shouldApply) return;
+    const paths = this.config.paths;
 
-    this.validateConfig(compiler);
+    if (!paths) return;
 
     compiler.hooks.emitter.tap('PathsPlugin', (emitter: Emitter) => {
       emitter.hooks.beforeAssetAction.tap('PathsPlugin', (asset: Asset) => {
-        const assetType = this.determineAssetType(asset.source.relative);
+        const assetType = this.determineAssetType(paths, asset.source.relative);
 
         if (!assetType) return;
 
@@ -153,25 +124,15 @@ export class PathsPlugin extends Plugin {
     });
   }
 
-  private validateConfig(compiler: Compiler) {
-    const result = pathsPluginConfig.safeParse(this.config);
-
-    if (!result.success) {
-      compiler.addErrors('ConfigError', formatZodIssues(result.error.issues), {
-        bail: true,
-      });
-    }
-  }
-
-  private determineAssetType(assetPath: string): AssetType | null {
-    const pathEntries = Object.entries(this.config.paths) as Entries<PathsPluginConfig['paths']>;
+  private determineAssetType(paths: Paths, assetPath: string): AssetType | null {
+    const pathEntries = Object.entries(paths);
 
     for (let i = 0; i < pathEntries.length; i += 1) {
       const [name, patterns] = pathEntries[i];
 
       for (let j = 0; j < patterns.length; j++) {
         if (assetPath.match(patterns[j])) {
-          return name;
+          return name as AssetType;
         }
       }
     }

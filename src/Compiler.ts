@@ -115,16 +115,4 @@ export class Compiler {
 
     process.exit();
   }
-
-  addWarnings(message: string, warnings: string[]) {
-    this.logger.error(message, warnings);
-  }
-
-  addErrors(message: string, errors: string[], { bail = false } = {}) {
-    this.logger.error(message, errors);
-
-    if (bail) {
-      this.close();
-    }
-  }
 }

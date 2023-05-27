@@ -1,27 +1,22 @@
-import { z } from 'zod';
 import { CompilationStats } from '../Compilation';
 import { Compiler } from '../Compiler';
 import { Plugin } from '../Plugin';
 
-export const statsPluginConfig = z.object({
-  stats: z.boolean().optional(),
-});
-
-export type StatsPluginConfig = z.infer<typeof statsPluginConfig>;
+export type StatsPluginConfig = {
+  stats?: boolean;
+};
 
 export class StatsPlugin extends Plugin {
   config: StatsPluginConfig;
-  shouldApply: boolean;
 
   constructor(config: StatsPluginConfig = {}) {
     super();
 
     this.config = config;
-    this.shouldApply = config.stats !== false;
   }
 
   apply(compiler: Compiler): void {
-    if (!this.shouldApply) return;
+    if (this.config.stats === false) return;
 
     compiler.hooks.done.tap('StatsPlugin', (compilationStats: CompilationStats) => {
       if (compilationStats.errors.length > 0) {

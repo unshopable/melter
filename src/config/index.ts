@@ -1,26 +1,25 @@
-import { z } from 'zod';
-import { plugin } from '../Plugin';
-import { pathsPluginConfig } from '../plugins/PathsPlugin';
-import { statsPluginConfig } from '../plugins/StatsPlugin';
+import { Plugin } from '../Plugin';
+import { PathsPluginConfig } from '../plugins/PathsPlugin';
+import { StatsPluginConfig } from '../plugins/StatsPlugin';
 
-export const baseCompilerConfig = z.object({
+export * from './load';
+
+export type BaseCompilerConfig = {
   /**
    * Where to look for files to compile.
    */
-  input: z.string(),
+  input: string;
 
   /**
    * Where to write the compiled files to. The emitter won't emit any assets if undefined.
    */
-  output: z.string(),
+  output: string;
 
   /**
    * A list of additional plugins to add to the compiler.
    */
-  plugins: z.array(plugin),
-});
-
-export type BaseCompilerConfig = z.infer<typeof baseCompilerConfig>;
+  plugins: Plugin[];
+};
 
 export const defaultBaseCompilerConfig: BaseCompilerConfig = {
   input: 'src',
@@ -28,23 +27,14 @@ export const defaultBaseCompilerConfig: BaseCompilerConfig = {
   plugins: [],
 };
 
-export const builtinPluginsConfig = z
-  .object({})
-  .merge(statsPluginConfig.deepPartial())
-  .merge(pathsPluginConfig.deepPartial());
-
-export const compilerConfig = baseCompilerConfig.merge(builtinPluginsConfig);
-
 /**
  * Compiler configuration object.
  */
-export type CompilerConfig = z.infer<typeof compilerConfig>;
-
-export const melterConfig = compilerConfig.deepPartial();
+export type CompilerConfig = {} & BaseCompilerConfig & StatsPluginConfig & PathsPluginConfig;
 
 /**
  * Melter configuration object.
  *
  * @see [Configuration documentation](https://github.com/unshopable/melter#configuration)
  */
-export type MelterConfig = z.infer<typeof melterConfig>;
+export type MelterConfig = Partial<CompilerConfig>;
