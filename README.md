@@ -137,6 +137,7 @@ Now that you know what can be configured, let's play with it:
 
 ```diff
   /** @type {import("@unshopable/melter").MelterConfig} */
+- const melterConfig = {};
 + const melterConfig = {
 +   paths: {
 +     sections: [
