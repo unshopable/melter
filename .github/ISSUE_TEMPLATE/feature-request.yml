@@ -1,0 +1,29 @@
+name: Feature Request
+description: Suggest a new feature, or changes to an existing one
+title: '<SUMAMRY OF YOUR REQUEST>'
+labels:
+  - 'enhancement'
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: What type of change do you want to see?
+      options:
+        - New feature
+        - Change to an existing feature
+    validations:
+      required: true
+  - type: textarea
+    id: overview
+    attributes:
+      label: Overview
+      description: Please describe the feature you'd like to be added to melter.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What inspired this feature request? What problems were you facing?
+    validations:
+      required: true
