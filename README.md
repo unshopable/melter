@@ -37,6 +37,7 @@ Now we'll create the following directory structure, files and their contents:
 
 ```diff
   melter-basic-demo
+  ├── node_modules
 + ├── src
 + │   └── sections
 + │       └── my-section.liquid
@@ -63,16 +64,22 @@ Note that is is only a basic example to get you started with melter. Your direct
 Next run:
 
 ```sh
-melter
+$ npx melter
+
+...
+
+Compiled with 1 warnings
+
+  ⚠ No config found. Loaded default config. To disable this warning create a custom config.
 ```
 
 This should have created a new directory (`dist`) in the root of your project with the following directory strcuture, files and their contents:
 
-```
-melter-basic-demo
-├── dist
-│   └── sections
-│       └── my-section.liquid
+```diff
+  melter-basic-demo
++ ├── dist
++ │   └── sections
++ │       └── my-section.liquid
 ...
 ```
 
@@ -90,6 +97,7 @@ Since melter doesn't really do anything – or at least nothing useful – witho
 
 ```diff
   melter-basic-demo
+  ├── node_modules
   ├── src
   │   └── sections
   │       └── my-section.liquid
@@ -103,6 +111,8 @@ Since melter doesn't really do anything – or at least nothing useful – witho
 ```js
 /** @type {import("@unshopable/melter").MelterConfig} */
 const melterConfig = {};
+
+module.exports = melterConfig;
 ```
 
 ### Options
@@ -146,12 +156,15 @@ Now that you know what can be configured, let's play with it:
 +     ],
 +   },
 + };
+
+  module.exports = melterConfig;
 ```
 
 Also update your `src` directory:
 
 ```diff
   melter-basic-demo
+  ├── node_modules
   ├── src
   │   └── sections
 + │       ├── legacy
@@ -162,20 +175,24 @@ Also update your `src` directory:
   └── package.json
 ```
 
-And once again, run
+And once again, run:
 
 ```sh
-melter
+$ npx melter
+
+...
+
+Successfully compiled in x ms
 ```
 
 Your `dist` directory should look like this now:
 
-```
-melter-basic-demo
-├── dist
-│   └── sections
-│       ├── my-legacy-section.liquid
-│       └── my-section.liquid
+```diff
+  melter-basic-demo
+  ├── dist
+  │   └── sections
++ │       ├── my-legacy-section.liquid
+  │       └── my-section.liquid
 ...
 ```
 
@@ -198,6 +215,51 @@ Now extend the `paths` option so we can split re-usable liquid components and UI
 +     ],
     },
   };
+
+  module.exports = melterConfig;
+```
+
+And update your `src` directory:
+
+```diff
+  melter-basic-demo
+  ├── node_modules
+  ├── src
++ │   ├── components
++ │   │   └── my-ui-snippet.liquid
+  │   ├── sections
+  │   │   ├── legacy
+  │   │   │   └── my-legacy-section.liquid
+  │   │   └── my-section.liquid
++ │   └── snippets
++ │       └── my-functional-snippet.liquid
+  ├── melter.config.js
+  ├── package-lock.json
+  └── package.json
+```
+
+Finally, run:
+
+```sh
+$ npx melter
+
+...
+
+Successfully compiled in x ms
+```
+
+Your `dist` directory should look like this now:
+
+```diff
+  melter-basic-demo
+  ├── dist
+  │   ├── sections
+  │   │   ├── my-legacy-section.liquid
+  │   │   └── my-section.liquid
++ │   └── snippets
++ │       ├── my-functional-snippet.liquid
++ │       └── my-ui-snippet.liquid
+...
 ```
 
 If you have custom requirements the base melter config might not be sufficient. In this case consider using an [official](#official-plugins) or [community](#community-plugins) plugin. You can also develop [custom plugins](#develop-plugins).
@@ -210,6 +272,7 @@ To see them in action, create a new file in your root directory:
 
 ```diff
   melter-basic-demo
+  ├── node_modules
   ├── src
   │   └── sections
   │       ├── legacy
@@ -222,11 +285,11 @@ To see them in action, create a new file in your root directory:
 ```
 
 ```js
-import { Plugin } from '@unshopable/melter';
+const HelloToHiPlugin = require('./hello-to-hi-plugin.js');
 
-export class HelloToHiPlugin extends Plugin {
+class HelloToHiPlugin extends Plugin {
   apply(compiler) {
-    compiler.hooks.emitter.tap('HelloToHiPlugin', () => {
+    compiler.hooks.emitter.tap('HelloToHiPlugin', (emitter) => {
       emitter.hooks.beforeAssetAction.tap('HelloToHiPlugin', (asset) => {
         const assetContentString = asset.content.toString();
 
@@ -239,12 +302,14 @@ export class HelloToHiPlugin extends Plugin {
     });
   }
 }
+
+module.exports = HelloToHiPlugin;
 ```
 
 Now add this to your melter config:
 
 ```diff
-  import { HelloToHiPlugin } from './hello-to-hi-plugin.js';
++ const HelloToHiPlugin = require('./hello-to-hi-plugin.js');
 
   /** @type {import("@unshopable/melter").MelterConfig} */
   const melterConfig = {
@@ -263,12 +328,18 @@ Now add this to your melter config:
 +     new HelloToHiPlugin(),
 +   ],
   };
+
+  module.exports = melterConfig;
 ```
 
 Then, run:
 
 ```sh
-melter
+$ npx melter
+
+...
+
+Successfully compiled in x ms
 ```
 
 Open `dist/sections/my-section.liquid`. You should see the following content:
