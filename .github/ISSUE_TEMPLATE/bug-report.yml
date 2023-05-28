@@ -1,0 +1,58 @@
+name: Bug Report
+description: Report a bug
+title: '<SUMMARY OF YOUR ISSUE>'
+labels:
+  - 'bug'
+body:
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Let us know the exact steps required to reproduce the bug. The more details, the better!
+      value: |-
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What do you think should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment Details
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: Windows 11, Mac OS Monterey, Ubuntu 20.04...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Melter version (check your project's `package.json` if you're not sure)
+    validations:
+      required: true
+  - type: input
+    id: shell
+    attributes:
+      label: Shell
+      placeholder: Cygwin, Git Bash, iTerm2, bash, zsh...
+  - type: input
+    id: node_version
+    attributes:
+      label: Node version (run `node -v` if you're not sure)
+      placeholder: v18.0.0

@@ -1,0 +1,55 @@
+{
+  "name": "@unshopable/melter",
+  "version": "0.1.0-alpha.34",
+  "description": "Shopify Theme build tool and plugin manager which lets you create custom directory structures and add custom file transformations to melt anything into Liquid 🫠",
+  "author": "",
+  "keywords": [
+    "plugin-manager",
+    "liquid",
+    "shopify",
+    "build-tool",
+    "shopify-theme",
+    "development-tool"
+  ],
+  "license": "MIT",
+  "repository": "unshopable/melter",
+  "homepage": "https://github.com/unshopable/melter",
+  "bugs": "https://github.com/unshopable/melter/issues",
+  "private": false,
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "npx nodemon",
+    "build": "tsup",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "fast-glob": "^3.2.12",
+    "fs-extra": "^11.1.1",
+    "just-safe-get": "^4.2.0",
+    "just-safe-set": "^4.2.1",
+    "tapable": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^20.2.3",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.5.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
+  }
+}

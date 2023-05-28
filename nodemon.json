@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "sandbox"],
+  "ext": ".ts",
+  "ignore": [],
+  "exec": "npx ts-node ./sandbox/index.ts"
+}
