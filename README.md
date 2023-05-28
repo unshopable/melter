@@ -290,7 +290,7 @@ To see them in action, create a new file in your root directory:
 **hello-to-hi-plugin.js**
 
 ```js
-const HelloToHiPlugin = require('./hello-to-hi-plugin.js');
+const { Plugin } = require('@unshopable/melter');
 
 class HelloToHiPlugin extends Plugin {
   apply(compiler) {
