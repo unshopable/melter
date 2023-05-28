@@ -23,7 +23,7 @@ Melter is used to compile files into something that is compatible with [Shopify'
 - [Contributing](#contributing)
 - [License](#license)
 
-### Getting started
+## Getting started
 
 First, let's create a new directory, initialize npm, install melter and its CLI locally:
 
