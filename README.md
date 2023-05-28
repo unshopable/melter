@@ -14,8 +14,9 @@ Melter is used to compile files into something that is compatible with [Shopify'
     - [Output](#output)
     - [Stats](#stats)
     - [Paths](#paths)
-  - [Examples](#examples)
+  - [Examples](#config-examples)
 - [Plugins](#plugins)
+  - [Examples](#plugin-examples)
   - [Official Plugins](#official-plugins)
   - [Community Plugins](#community-plugins)
   - [Custom Plugins](#custom-plugins)
@@ -139,7 +140,7 @@ The `paths` options controls the built-in `PathsPlugin` which determines where t
 
 Setting it to `false` prevents the `PathsPlugin` from being applied which results in no files being emitted. This is handy if you want to implement a custom directory structure through plugins.
 
-### Examples
+### Config Examples
 
 Now that you know what can be configured, let's play with it:
 
@@ -268,6 +269,8 @@ If you have custom requirements the base melter config might not be sufficient. 
 
 Plugins are what makes melter powerful. A plugin is a JavaScript object that has an `apply` method which is called by the melter compiler, giving it access to the entire compilation lifecycle.
 
+### Plugin Examples
+
 To see them in action, create a new file in your root directory:
 
 ```diff
@@ -283,6 +286,8 @@ To see them in action, create a new file in your root directory:
   ├── package-lock.json
   └── package.json
 ```
+
+**hello-to-hi-plugin.js**
 
 ```js
 const HelloToHiPlugin = require('./hello-to-hi-plugin.js');
@@ -348,7 +353,7 @@ Open `dist/sections/my-section.liquid`. You should see the following content:
 <div>Hi, World!</div>
 ```
 
-Once again this is only a super basic example to get to know the capabilities of melter. To see what's possible, check out already existing plugins:
+Once again, this is only a super basic example to get to know the capabilities of melter. To see what's possible, check out already existing plugins:
 
 ### Official Plugins
 
