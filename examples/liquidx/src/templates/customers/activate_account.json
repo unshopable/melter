@@ -1,0 +1,9 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "account-activate-main"
+    }
+  },
+  "order": ["main"]
+}

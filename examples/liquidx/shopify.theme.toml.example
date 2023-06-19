@@ -1,0 +1,4 @@
+[environments.development]
+store = "<STORE_HANDLE>"
+password = "<THEME_ACCESS_PASSWORD>"
+path = "dist"

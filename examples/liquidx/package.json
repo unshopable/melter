@@ -1,0 +1,23 @@
+{
+  "name": "liquidx",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "shopify:dev": "shopify theme dev -e development",
+    "melter:dev": "melter --watch",
+    "melter:build": "melter",
+    "dev": "npm-run-all melter:build -p melter:dev shopify:dev"
+  },
+  "devDependencies": {
+    "@shopify/cli": "^3.46.5",
+    "@shopify/theme": "^3.46.5",
+    "@unshopable/melter": "^0.1.0-alpha.34",
+    "@unshopable/melter-cli": "^0.1.0-alpha.1",
+    "@unshopable/melter-plugin-liquidx": "^0.1.0-alpha.2",
+    "npm-run-all": "^4.1.5"
+  }
+}

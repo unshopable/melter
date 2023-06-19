@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Secrets
+shopify.theme.toml
+
+# Build
+dist/

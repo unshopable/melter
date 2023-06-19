@@ -1,0 +1,9 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "page-main"
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,9 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "blog-main"
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,11 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "blog-article-main"
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
