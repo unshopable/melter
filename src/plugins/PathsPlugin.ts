@@ -101,6 +101,7 @@ export class PathsPlugin extends Plugin {
         const assetType = this.determineAssetType(paths, asset.source.relative);
 
         if (!assetType) return;
+        asset.type = assetType;
 
         const assetSourcePathParts = asset.source.relative.split('/');
 
