@@ -6,8 +6,8 @@ import { getFilenameFromPath, parseJSON } from '../utils';
 
 function getConfigFiles(cwd: string): string[] {
   const configFilePattern = 'melter.config.*';
-
-  return fg.sync(path.join(cwd, configFilePattern));
+  // flat-glob only supports POSIX path syntax, so we use convertPathToPattern() for windows
+  return fg.sync(fg.convertPathToPattern(cwd) + '/' + configFilePattern);
 }
 
 function parseConfigFile(file: string): { config: MelterConfig | null; errors: string[] } {
