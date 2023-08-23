@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { SyncHook } from 'tapable';
+import { AsyncParallelHook } from 'tapable';
 import { Asset } from './Asset';
 import { Compiler, CompilerEvent } from './Compiler';
 
@@ -62,15 +62,15 @@ export class Compilation {
     };
 
     this.hooks = Object.freeze<CompilationHooks>({
-      beforeAddAsset: new SyncHook(['asset']),
-      afterAddAsset: new SyncHook(['asset']),
+      beforeAddAsset: new AsyncParallelHook(['asset']), // Use AsyncParallelHook
+      afterAddAsset: new AsyncParallelHook(['asset']),  // Use AsyncParallelHook
     });
   }
 
-  create() {
+  async create() {
     const startTime = performance.now();
 
-    this.assetPaths.forEach((assetPath) => {
+    const promises = Array.from(this.assetPaths).map(async (assetPath) => {
       const assetType = 'sections';
 
       const sourcePath = {
@@ -80,13 +80,15 @@ export class Compilation {
 
       const asset = new Asset(assetType, sourcePath, new Set(), this.event);
 
-      this.hooks.beforeAddAsset.call(asset);
+      await this.hooks.beforeAddAsset.promise(asset); // Use .promise() for Async hooks
 
       this.assets.add(asset);
       this.stats.assets.push(asset);
 
-      this.hooks.afterAddAsset.call(asset);
+      await this.hooks.afterAddAsset.promise(asset); // Use .promise() for Async hooks
     });
+
+    await Promise.all(promises);
 
     const endTime = performance.now();
 
