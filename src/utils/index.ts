@@ -1,5 +1,17 @@
+import * as _path from 'path';
+
 export function getFilenameFromPath(path: string): string {
-  return path.split('/').at(-1)!;
+  return path.split(_path.sep).at(-1)!;
+}
+
+export function normalizePath(path: string): string {
+	const isExtendedLengthPath = path.startsWith('\\\\?\\');
+
+	if (isExtendedLengthPath) {
+		return path;
+	}
+
+	return path.replace(/\\/g, '/');
 }
 
 /**

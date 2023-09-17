@@ -1,6 +1,6 @@
 {
   "name": "@unshopable/melter",
-  "version": "0.1.0-alpha.39",
+  "version": "0.1.0-alpha.40",
   "description": "Shopify Theme build tool and plugin manager which lets you create custom directory structures and add custom file transformations to melt anything into Liquid 🫠",
   "author": "",
   "keywords": [
