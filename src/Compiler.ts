@@ -1,4 +1,4 @@
-import { AsyncParallelHook } from 'tapable';
+import { AsyncSeriesHook } from 'tapable';
 import { Compilation, CompilationStats } from './Compilation';
 import { Emitter } from './Emitter';
 import { Logger } from './Logger';
@@ -6,16 +6,16 @@ import { Watcher } from './Watcher';
 import { CompilerConfig } from './config';
 
 export type CompilerHooks = {
-  beforeCompile: AsyncParallelHook<[]>;
-  compilation: AsyncParallelHook<[Compilation]>;
-  afterCompile: AsyncParallelHook<[Compilation]>;
-  beforeEmit: AsyncParallelHook<[Compilation]>;
-  emitter: AsyncParallelHook<[Emitter]>;
-  afterEmit: AsyncParallelHook<[Compilation]>;
-  done: AsyncParallelHook<[CompilationStats]>;
+  beforeCompile: AsyncSeriesHook<[]>;
+  compilation: AsyncSeriesHook<[Compilation]>;
+  afterCompile: AsyncSeriesHook<[Compilation]>;
+  beforeEmit: AsyncSeriesHook<[Compilation]>;
+  emitter: AsyncSeriesHook<[Emitter]>;
+  afterEmit: AsyncSeriesHook<[Compilation]>;
+  done: AsyncSeriesHook<[CompilationStats]>;
 
-  watcherStart: AsyncParallelHook<[]>;
-  watcherClose: AsyncParallelHook<[]>;
+  watcherStart: AsyncSeriesHook<[]>;
+  watcherClose: AsyncSeriesHook<[]>;
 };
 
 export type CompilerEvent = 'add' | 'update' | 'remove';
@@ -35,16 +35,16 @@ export class Compiler {
     this.config = config;
 
     this.hooks = Object.freeze<CompilerHooks>({
-      beforeCompile: new AsyncParallelHook(),
-      compilation: new AsyncParallelHook(['compilation']),
-      afterCompile: new AsyncParallelHook(['compilation']),
-      beforeEmit: new AsyncParallelHook(['compilation']),
-      emitter: new AsyncParallelHook(['emitter']),
-      afterEmit: new AsyncParallelHook(['compilation']),
-      done: new AsyncParallelHook(['stats']),
+      beforeCompile: new AsyncSeriesHook(),
+      compilation: new AsyncSeriesHook(['compilation']),
+      afterCompile: new AsyncSeriesHook(['compilation']),
+      beforeEmit: new AsyncSeriesHook(['compilation']),
+      emitter: new AsyncSeriesHook(['emitter']),
+      afterEmit: new AsyncSeriesHook(['compilation']),
+      done: new AsyncSeriesHook(['stats']),
 
-      watcherStart: new AsyncParallelHook(),
-      watcherClose: new AsyncParallelHook(),
+      watcherStart: new AsyncSeriesHook(),
+      watcherClose: new AsyncSeriesHook(),
     });
 
     this.watcher = null;

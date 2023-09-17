@@ -1,12 +1,12 @@
 import * as fs from 'fs-extra';
-import { AsyncParallelHook } from 'tapable'; // Import AsyncParallelHook
+import { AsyncSeriesHook } from 'tapable'; // Import AsyncSeriesHook
 import { Asset, AssetPath } from './Asset';
 import { Compilation } from './Compilation';
 import { Compiler } from './Compiler';
 
 export type EmitterHooks = Readonly<{
-  beforeAssetAction: AsyncParallelHook<[Asset]>; // Change to AsyncParallelHook
-  afterAssetAction: AsyncParallelHook<[Asset]>; // Change to AsyncParallelHook
+  beforeAssetAction: AsyncSeriesHook<[Asset]>; // Change to AsyncSeriesHook
+  afterAssetAction: AsyncSeriesHook<[Asset]>; // Change to AsyncSeriesHook
 }>;
 
 export class Emitter {
@@ -20,8 +20,8 @@ export class Emitter {
     this.compilation = compilation;
 
     this.hooks = {
-      beforeAssetAction: new AsyncParallelHook(['asset']), // Change to AsyncParallelHook
-      afterAssetAction: new AsyncParallelHook(['asset']), // Change to AsyncParallelHook
+      beforeAssetAction: new AsyncSeriesHook(['asset']), // Change to AsyncSeriesHook
+      afterAssetAction: new AsyncSeriesHook(['asset']), // Change to AsyncSeriesHook
     };
   }
 

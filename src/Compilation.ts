@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { AsyncParallelHook } from 'tapable';
+import { AsyncSeriesHook } from 'tapable';
 import { Asset } from './Asset';
 import { Compiler, CompilerEvent } from './Compiler';
 
@@ -26,8 +26,8 @@ export type CompilationStats = {
 };
 
 export type CompilationHooks = {
-  beforeAddAsset: SyncHook<[Asset]>;
-  afterAddAsset: SyncHook<[Asset]>;
+  beforeAddAsset: AsyncSeriesHook<[Asset]>;
+  afterAddAsset: AsyncSeriesHook<[Asset]>;
 };
 
 export class Compilation {
@@ -62,8 +62,8 @@ export class Compilation {
     };
 
     this.hooks = Object.freeze<CompilationHooks>({
-      beforeAddAsset: new AsyncParallelHook(['asset']), // Use AsyncParallelHook
-      afterAddAsset: new AsyncParallelHook(['asset']),  // Use AsyncParallelHook
+      beforeAddAsset: new AsyncSeriesHook(['asset']), // Use AsyncSeriesHook
+      afterAddAsset: new AsyncSeriesHook(['asset']),  // Use AsyncSeriesHook
     });
   }
 
