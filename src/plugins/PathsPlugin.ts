@@ -3,6 +3,7 @@ import { Asset, AssetPath, AssetType } from '../Asset';
 import { Compiler } from '../Compiler';
 import { Emitter } from '../Emitter';
 import { Plugin } from '../Plugin';
+import { normalizePath } from '../utils';
 
 type Paths = {
   /**
@@ -79,11 +80,11 @@ export class PathsPlugin extends Plugin {
     this.config =
       config.paths !== false
         ? {
-            paths: {
-              ...defaultPathsPluginConfig.paths,
-              ...config.paths,
-            },
-          }
+          paths: {
+            ...defaultPathsPluginConfig.paths,
+            ...config.paths,
+          },
+        }
         : {};
   }
 
@@ -103,12 +104,12 @@ export class PathsPlugin extends Plugin {
         if (!assetType) return;
         asset.type = assetType;
 
-        const assetSourcePathParts = asset.source.relative.split('/');
+        const assetSourcePathParts = asset.source.relative.split(path.sep);
 
         let assetFilename: string = '';
 
         if (assetSourcePathParts.at(-2) === 'customers') {
-          assetFilename = assetSourcePathParts.slice(-2).join('/');
+          assetFilename = assetSourcePathParts.slice(-2).join(path.sep);
         } else {
           assetFilename = assetSourcePathParts.at(-1)!;
         }
@@ -127,12 +128,13 @@ export class PathsPlugin extends Plugin {
 
   private determineAssetType(paths: Paths, assetPath: string): AssetType | null {
     const pathEntries = Object.entries(paths);
+    const normalizedAssetPath = normalizePath(assetPath);
 
     for (let i = 0; i < pathEntries.length; i += 1) {
       const [name, patterns] = pathEntries[i];
 
       for (let j = 0; j < patterns.length; j++) {
-        if (assetPath.match(patterns[j])) {
+        if (normalizedAssetPath.match(patterns[j])) {
           return name as AssetType;
         }
       }
