@@ -25,11 +25,11 @@ export class Watcher {
     this.initialAssetPaths = new Set<string>();
   }
 
-  start() {
+  async start() {
     if (this.watchOptions.persistent) {
       // Chokidar is not really watching without `persistent` being `true` so we do not want
       // to call the `watcherStart` hook in this case.
-      this.compiler.hooks.watcherStart.call();
+      await this.compiler.hooks.watcherStart.promise();
     }
 
     this.watcher = chokidar.watch(this.watcherPath, this.watchOptions);
@@ -63,7 +63,7 @@ export class Watcher {
     if (this.watcher) {
       await this.watcher.close();
 
-      this.compiler.hooks.watcherClose.call();
+      this.compiler.hooks.watcherClose.promise();
     }
   }
 }

@@ -91,7 +91,7 @@ export class Compiler {
 
     const compilation = new Compilation(this, event, assetPaths);
 
-    await this.hooks.compilation.callAsync(compilation);
+    await this.hooks.compilation.promise(compilation);
 
     compilation.create();
 
