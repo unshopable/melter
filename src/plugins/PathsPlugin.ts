@@ -79,11 +79,11 @@ export class PathsPlugin extends Plugin {
     this.config =
       config.paths !== false
         ? {
-            paths: {
-              ...defaultPathsPluginConfig.paths,
-              ...config.paths,
-            },
-          }
+          paths: {
+            ...defaultPathsPluginConfig.paths,
+            ...config.paths,
+          },
+        }
         : {};
   }
 
@@ -103,12 +103,12 @@ export class PathsPlugin extends Plugin {
         if (!assetType) return;
         asset.type = assetType;
 
-        const assetSourcePathParts = asset.source.relative.split('/');
+        const assetSourcePathParts = asset.source.relative.split(path.sep);
 
         let assetFilename: string = '';
 
         if (assetSourcePathParts.at(-2) === 'customers') {
-          assetFilename = assetSourcePathParts.slice(-2).join('/');
+          assetFilename = assetSourcePathParts.slice(-2).join(path.sep);
         } else {
           assetFilename = assetSourcePathParts.at(-1)!;
         }
