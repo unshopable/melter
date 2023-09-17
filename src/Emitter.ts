@@ -1,12 +1,12 @@
 import * as fs from 'fs-extra';
-import { SyncHook } from 'tapable';
+import { AsyncSeriesHook } from 'tapable'; // Import AsyncSeriesHook
 import { Asset, AssetPath } from './Asset';
 import { Compilation } from './Compilation';
 import { Compiler } from './Compiler';
 
 export type EmitterHooks = Readonly<{
-  beforeAssetAction: SyncHook<[Asset]>;
-  afterAssetAction: SyncHook<[Asset]>;
+  beforeAssetAction: AsyncSeriesHook<[Asset]>; // Change to AsyncSeriesHook
+  afterAssetAction: AsyncSeriesHook<[Asset]>; // Change to AsyncSeriesHook
 }>;
 
 export class Emitter {
@@ -20,54 +20,51 @@ export class Emitter {
     this.compilation = compilation;
 
     this.hooks = {
-      beforeAssetAction: new SyncHook(['asset']),
-      afterAssetAction: new SyncHook(['asset']),
+      beforeAssetAction: new AsyncSeriesHook(['asset']), // Change to AsyncSeriesHook
+      afterAssetAction: new AsyncSeriesHook(['asset']), // Change to AsyncSeriesHook
     };
   }
 
-  emit() {
-    this.compilation.assets.forEach((asset) => {
-      this.hooks.beforeAssetAction.call(asset);
+  async emit() { // Change the method to be asynchronous
+    for (const asset of this.compilation.assets) {
+      await this.hooks.beforeAssetAction.promise(asset); // Use .promise() for Async hooks
 
       if (typeof asset.target === 'undefined') {
         this.compilation.addWarning(`Missing target path: '${asset.source.relative}'`);
-
-        return;
+        continue;
       }
 
       switch (asset.action) {
         case 'add':
         case 'update': {
-          this.writeFile(asset.target.absolute, asset.content);
+          await this.writeFile(asset.target.absolute, asset.content); // Await the asynchronous method
 
           break;
         }
 
         case 'remove': {
-          this.removeFile(asset.target.absolute);
+          await this.removeFile(asset.target.absolute); // Await the asynchronous method
 
           break;
         }
-
-        // No default.
       }
 
-      this.hooks.afterAssetAction.call(asset);
-    });
+      await this.hooks.afterAssetAction.promise(asset); // Use .promise() for Async hooks
+    }
   }
 
-  private writeFile(targetPath: AssetPath['absolute'], content: Asset['content']) {
+  private async writeFile(targetPath: AssetPath['absolute'], content: Asset['content']) {
     try {
-      fs.ensureFileSync(targetPath);
-      fs.writeFileSync(targetPath, content);
+      await fs.ensureFile(targetPath);
+      await fs.writeFile(targetPath, content);
     } catch (error: any) {
       this.compilation.addError(error.message);
     }
   }
 
-  private removeFile(targetPath: AssetPath['absolute']) {
+  private async removeFile(targetPath: AssetPath['absolute']) {
     try {
-      fs.removeSync(targetPath);
+      await fs.remove(targetPath);
     } catch (error: any) {
       this.compilation.addError(error.message);
     }

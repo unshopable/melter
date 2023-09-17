@@ -1,4 +1,4 @@
-import { SyncHook } from 'tapable';
+import { AsyncSeriesHook } from 'tapable';
 import { Compilation, CompilationStats } from './Compilation';
 import { Emitter } from './Emitter';
 import { Logger } from './Logger';
@@ -6,16 +6,16 @@ import { Watcher } from './Watcher';
 import { CompilerConfig } from './config';
 
 export type CompilerHooks = {
-  beforeCompile: SyncHook<[]>;
-  compilation: SyncHook<[Compilation]>;
-  afterCompile: SyncHook<[Compilation]>;
-  beforeEmit: SyncHook<[Compilation]>;
-  emitter: SyncHook<[Emitter]>;
-  afterEmit: SyncHook<[Compilation]>;
-  done: SyncHook<[CompilationStats]>;
+  beforeCompile: AsyncSeriesHook<[]>;
+  compilation: AsyncSeriesHook<[Compilation]>;
+  afterCompile: AsyncSeriesHook<[Compilation]>;
+  beforeEmit: AsyncSeriesHook<[Compilation]>;
+  emitter: AsyncSeriesHook<[Emitter]>;
+  afterEmit: AsyncSeriesHook<[Compilation]>;
+  done: AsyncSeriesHook<[CompilationStats]>;
 
-  watcherStart: SyncHook<[]>;
-  watcherClose: SyncHook<[]>;
+  watcherStart: AsyncSeriesHook<[]>;
+  watcherClose: AsyncSeriesHook<[]>;
 };
 
 export type CompilerEvent = 'add' | 'update' | 'remove';
@@ -35,16 +35,16 @@ export class Compiler {
     this.config = config;
 
     this.hooks = Object.freeze<CompilerHooks>({
-      beforeCompile: new SyncHook(),
-      compilation: new SyncHook(['compilation']),
-      afterCompile: new SyncHook(['compilation']),
-      beforeEmit: new SyncHook(['compilation']),
-      emitter: new SyncHook(['emitter']),
-      afterEmit: new SyncHook(['compilation']),
-      done: new SyncHook(['stats']),
+      beforeCompile: new AsyncSeriesHook(),
+      compilation: new AsyncSeriesHook(['compilation']),
+      afterCompile: new AsyncSeriesHook(['compilation']),
+      beforeEmit: new AsyncSeriesHook(['compilation']),
+      emitter: new AsyncSeriesHook(['emitter']),
+      afterEmit: new AsyncSeriesHook(['compilation']),
+      done: new AsyncSeriesHook(['stats']),
 
-      watcherStart: new SyncHook(),
-      watcherClose: new SyncHook(),
+      watcherStart: new AsyncSeriesHook(),
+      watcherClose: new AsyncSeriesHook(),
     });
 
     this.watcher = null;
@@ -52,7 +52,9 @@ export class Compiler {
     this.logger = new Logger();
   }
 
-  build() {
+  async build() {
+    await this.hooks.beforeCompile.promise();
+
     const watcher = new Watcher(this, this.config.input, {
       cwd: this.cwd,
 
@@ -63,10 +65,12 @@ export class Compiler {
       persistent: false,
     });
 
+    await this.hooks.watcherStart.promise(); 
     watcher.start();
+    await this.hooks.watcherClose.promise(); 
   }
 
-  watch() {
+  async watch() {
     this.watcher = new Watcher(this, this.config.input, {
       cwd: this.cwd,
 
@@ -77,39 +81,43 @@ export class Compiler {
       persistent: true,
     });
 
+    await this.hooks.watcherStart.promise(); 
     this.watcher.start();
+    await this.hooks.watcherClose.promise(); 
   }
 
-  compile(event: CompilerEvent, assetPaths: Set<string>) {
-    this.hooks.beforeCompile.call();
+  async compile(event: CompilerEvent, assetPaths: Set<string>) {
+    await this.hooks.beforeCompile.promise();
 
     const compilation = new Compilation(this, event, assetPaths);
 
-    this.hooks.compilation.call(compilation);
+    await this.hooks.compilation.promise(compilation);
 
     compilation.create();
 
-    this.hooks.afterCompile.call(compilation);
+    await this.hooks.afterCompile.promise(compilation);
 
     // If no output directory is specified we do not want to emit assets.
     if (this.config.output) {
-      this.hooks.beforeEmit.call(compilation);
+      await this.hooks.beforeEmit.promise(compilation);
 
       const emitter = new Emitter(this, compilation);
 
-      this.hooks.emitter.call(emitter);
+      await this.hooks.emitter.promise(emitter);
 
       emitter.emit();
 
-      this.hooks.afterEmit.call(compilation);
+      await this.hooks.afterEmit.promise(compilation);
     }
 
-    this.hooks.done.call(compilation.stats);
+    await this.hooks.done.promise(compilation.stats);
   }
 
-  close() {
+  async close() {
     if (this.watcher) {
       // Close active watcher if compiler has one.
+      await this.hooks.watcherClose.promise();
+
       this.watcher.close();
     }
 
