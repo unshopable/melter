@@ -71,7 +71,7 @@ export class Compilation {
     const startTime = performance.now();
 
     const promises = Array.from(this.assetPaths).map(async (assetPath) => {
-      const assetType = 'sections';
+      const assetType = 'unknown';
 
       const sourcePath = {
         absolute: path.resolve(this.compiler.cwd, assetPath),

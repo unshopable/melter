@@ -8,7 +8,9 @@ export type AssetType =
   | 'locales'
   | 'sections'
   | 'snippets'
-  | 'templates';
+  | 'templates'
+  | 'unknown'
+  | 'custom';
 
 export type AssetPath = {
   absolute: string;
