@@ -71,21 +71,7 @@ export class Compilation {
     const startTime = performance.now();
 
     const promises = Array.from(this.assetPaths).map(async (assetPath) => {
-      const assetType = 'unknown';
-
-      const sourcePath = {
-        absolute: path.resolve(this.compiler.cwd, assetPath),
-        relative: assetPath,
-      };
-
-      const asset = new Asset(assetType, sourcePath, new Set(), this.event);
-
-      await this.hooks.beforeAddAsset.promise(asset); // Use .promise() for Async hooks
-
-      this.assets.add(asset);
-      this.stats.assets.push(asset);
-
-      await this.hooks.afterAddAsset.promise(asset); // Use .promise() for Async hooks
+      await this.addAsset(assetPath);
     });
 
     await Promise.all(promises);
@@ -93,6 +79,24 @@ export class Compilation {
     const endTime = performance.now();
 
     this.stats.time = Number((endTime - startTime).toFixed(2));
+  }
+
+  async addAsset(assetPath: string) {
+    const assetType = 'unknown';
+
+    const sourcePath = {
+      absolute: path.resolve(this.compiler.cwd, assetPath),
+      relative: assetPath,
+    };
+
+    const asset = new Asset(assetType, sourcePath, new Set(), this.event);
+
+    await this.hooks.beforeAddAsset.promise(asset); // Use .promise() for Async hooks
+
+    this.assets.add(asset);
+    this.stats.assets.push(asset);
+
+    await this.hooks.afterAddAsset.promise(asset); // Use .promise() for Async hooks
   }
 
   addWarning(warning: string) {
