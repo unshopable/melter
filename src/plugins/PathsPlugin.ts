@@ -97,8 +97,8 @@ export class PathsPlugin extends Plugin {
 
     if (!paths) return;
 
-    compiler.hooks.emitter.tap('PathsPlugin', (emitter: Emitter) => {
-      emitter.hooks.beforeAssetAction.tap('PathsPlugin', (asset: Asset) => {
+    compiler.hooks.compilation.tap('PathsPlugin', (compilation) => {
+      compilation.hooks.afterAddAsset.tapPromise('PathsPlugin', async (asset: Asset) => {
         const assetType = this.determineAssetType(paths, asset.source.relative);
 
         if (!assetType) return;
