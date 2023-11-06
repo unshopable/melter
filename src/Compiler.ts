@@ -67,9 +67,9 @@ export class Compiler {
       persistent: false,
     });
 
-    await this.hooks.watcherStart.promise();
+    await this.hooks.watcherStart.promise(); 
     watcher.start();
-    await this.hooks.watcherClose.promise();
+    await this.hooks.watcherClose.promise(); 
   }
 
   async watch() {
@@ -85,9 +85,9 @@ export class Compiler {
       persistent: true,
     });
 
-    await this.hooks.watcherStart.promise();
+    await this.hooks.watcherStart.promise(); 
     this.watcher.start();
-    await this.hooks.watcherClose.promise();
+    await this.hooks.watcherClose.promise(); 
   }
 
   async compile(event: CompilerEvent, assetPaths: Set<string>) {
