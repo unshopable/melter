@@ -25,7 +25,8 @@ export class Emitter {
     };
   }
 
-  async emit() { // Change the method to be asynchronous
+  async emit() {
+    // Change the method to be asynchronous
     for (const asset of this.compilation.assets) {
       await this.hooks.beforeAssetAction.promise(asset); // Use .promise() for Async hooks
 

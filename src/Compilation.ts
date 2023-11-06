@@ -63,7 +63,7 @@ export class Compilation {
 
     this.hooks = Object.freeze<CompilationHooks>({
       beforeAddAsset: new AsyncSeriesHook(['asset']), // Use AsyncSeriesHook
-      afterAddAsset: new AsyncSeriesHook(['asset']),  // Use AsyncSeriesHook
+      afterAddAsset: new AsyncSeriesHook(['asset']), // Use AsyncSeriesHook
     });
   }
 

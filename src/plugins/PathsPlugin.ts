@@ -80,11 +80,11 @@ export class PathsPlugin extends Plugin {
     this.config =
       config.paths !== false
         ? {
-          paths: {
-            ...defaultPathsPluginConfig.paths,
-            ...config.paths,
-          },
-        }
+            paths: {
+              ...defaultPathsPluginConfig.paths,
+              ...config.paths,
+            },
+          }
         : {};
   }
 

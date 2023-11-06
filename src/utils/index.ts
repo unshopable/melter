@@ -5,13 +5,13 @@ export function getFilenameFromPath(path: string): string {
 }
 
 export function normalizePath(path: string): string {
-	const isExtendedLengthPath = path.startsWith('\\\\?\\');
+  const isExtendedLengthPath = path.startsWith('\\\\?\\');
 
-	if (isExtendedLengthPath) {
-		return path;
-	}
+  if (isExtendedLengthPath) {
+    return path;
+  }
 
-	return path.replace(/\\/g, '/');
+  return path.replace(/\\/g, '/');
 }
 
 /**
