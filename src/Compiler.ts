@@ -58,6 +58,8 @@ export class Compiler {
     const watcher = new Watcher(this, this.config.input, {
       cwd: this.cwd,
 
+      ignored: this.config.ignored,
+
       // Trigger build.
       ignoreInitial: false,
 
@@ -73,6 +75,8 @@ export class Compiler {
   async watch() {
     this.watcher = new Watcher(this, this.config.input, {
       cwd: this.cwd,
+
+      ignored: this.config.ignored,
 
       // Trigger an initial build.
       ignoreInitial: false,
