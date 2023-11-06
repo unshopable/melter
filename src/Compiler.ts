@@ -58,6 +58,8 @@ export class Compiler {
     const watcher = new Watcher(this, this.config.input, {
       cwd: this.cwd,
 
+      ignored: this.config.ignored,
+
       // Trigger build.
       ignoreInitial: false,
 
@@ -65,14 +67,16 @@ export class Compiler {
       persistent: false,
     });
 
-    await this.hooks.watcherStart.promise(); 
+    await this.hooks.watcherStart.promise();
     watcher.start();
-    await this.hooks.watcherClose.promise(); 
+    await this.hooks.watcherClose.promise();
   }
 
   async watch() {
     this.watcher = new Watcher(this, this.config.input, {
       cwd: this.cwd,
+
+      ignored: this.config.ignored,
 
       // Trigger an initial build.
       ignoreInitial: false,
@@ -81,9 +85,9 @@ export class Compiler {
       persistent: true,
     });
 
-    await this.hooks.watcherStart.promise(); 
+    await this.hooks.watcherStart.promise();
     this.watcher.start();
-    await this.hooks.watcherClose.promise(); 
+    await this.hooks.watcherClose.promise();
   }
 
   async compile(event: CompilerEvent, assetPaths: Set<string>) {

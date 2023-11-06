@@ -4,11 +4,21 @@ import { StatsPluginConfig } from '../plugins/StatsPlugin';
 
 export * from './load';
 
+// TODO: Can we import this from chokidar/anymatch?
+type AnymatchFn = (testString: string) => boolean;
+type AnymatchPattern = string | RegExp | AnymatchFn;
+type AnymatchMatcher = AnymatchPattern | AnymatchPattern[];
+
 export type BaseCompilerConfig = {
   /**
    * Where to look for files to compile.
    */
   input: string;
+
+  /**
+   * A list of paths to ignore.
+   */
+  ignored: AnymatchMatcher;
 
   /**
    * Where to write the compiled files to. The emitter won't emit any assets if undefined.
@@ -23,6 +33,7 @@ export type BaseCompilerConfig = {
 
 export const defaultBaseCompilerConfig: BaseCompilerConfig = {
   input: 'src',
+  ignored: [],
   output: 'dist',
   plugins: [],
 };
